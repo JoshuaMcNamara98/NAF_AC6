@@ -47,6 +47,24 @@ implementation; ask for the full workflow if you want the agent to continue thro
 review checkpoints. Give feedback in the same chat—the skills update related documents
 when requirements change. The agent reports failed, blocked, and untested checks.
 
+### Add unit tests in a separate session
+
+After implementation, start a fresh agent chat and invoke:
+
+```text
+/speckit:tests specs/001-json-import-button
+```
+
+Use your feature's specs directory. Without a path, the skill verifies the selected
+feature. It supports existing implementations with incomplete feature documents and
+does not require initialization when an explicit specs directory is provided.
+It reuses existing test locations, frameworks, fixtures, and commands, testing relevant
+behavioral edge cases rather than line execution alone.
+
+The skill changes unit-test source files only, runs relevant tests, and reports results,
+missing inputs, untested cases, and evidence-backed suspected defects in chat. It does
+not fix production code or install dependencies.
+
 ## Skills and when to use them
 
 | Skill | What it does and when to use it |
@@ -59,6 +77,7 @@ when requirements change. The agent reports failed, blocked, and untested checks
 | [`tasks`](skills/tasks/SKILL.md) | Turn the agreed specification and plan into ordered, testable work items. |
 | [`analyze`](skills/analyze/SKILL.md) | Check the spec, plan, and tasks for inconsistencies before implementation; read-only. |
 | [`implement`](skills/implement/SKILL.md) | Carry out the agreed tasks, run checks, and record verification. Invoke when ready to implement. |
+| [`tests`](skills/tests/SKILL.md) | In a separate session, add and run requirement-driven unit tests using available specs and existing test conventions. |
 | [`converge`](skills/converge/SKILL.md) | Compare completed work with acceptance criteria and add tasks for concrete gaps. |
 | [`checklist`](skills/checklist/SKILL.md) | Review requirements in a chosen area, such as accessibility or compatibility. |
 | [`taskstoissues`](skills/taskstoissues/SKILL.md) | Publish tasks as GitHub issues only after confirming the destination and approving the proposal. |

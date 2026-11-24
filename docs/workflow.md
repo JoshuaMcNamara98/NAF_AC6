@@ -16,6 +16,9 @@ project**, not the installed plugin.
 
 ## Initialize and select
 
+The `tests` skill uses the tests-only exception below instead of initialization or
+selection writes.
+
 - Check `.specify/speckit-plugin.json`. If tooling is missing, run the `init` skill.
   If `.specify/` is unmanaged or has an incompatible version, stop and explain the
   migration needed; do not overwrite or mix tooling.
@@ -59,3 +62,24 @@ Use the skill invocation mechanism and names exposed by the current client. Plug
 clients may show commands such as `/speckit:plan`; others may show plain names such as
 `plan`. Printing a slash command does not invoke it. This plugin has no automatic commit
 hooks or executable lifecycle hooks.
+
+## Tests-only exception
+
+The manually invoked `tests` skill supports existing implementations with incomplete
+feature documents or no initialized tooling. Use an explicit specs directory when
+provided; otherwise verify the selected feature using read-only paths resolution when
+available. Report missing or invalid inputs and ask for the intended feature or missing
+behavioral decisions. Do not initialize tooling or write selection or feature files.
+
+For this skill only, author unit-test source files and report results and findings in
+chat. Do not change production code, test configuration, dependencies, CI, requirements,
+plans, tasks, or verification documents; do not install dependencies. The feedback and
+verification-document instructions above do not authorize those writes during `tests`.
+If feedback changes requirements, pause for revision through the appropriate stage.
+
+Reuse project test conventions and run the narrowest relevant existing safe command.
+Repair only demonstrable defects in this invocation's tests, never weaken expectations
+to hide implementation failures. Preserve unrelated work and report failures, missing
+inputs, untested cases, and evidence-backed suspected defects explicitly. Do not stage,
+commit, push, deploy, or publish issues. These exceptions do not change any other skill's
+initialization, regression-testing, feedback, or verification responsibilities.
