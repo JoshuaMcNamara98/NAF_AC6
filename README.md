@@ -42,10 +42,18 @@ For example, to add a button that imports a JSON file:
 /speckit:implement
 ```
 
-Run `clarify` when material questions remain. Review the specification and plan before
-implementation; ask for the full workflow if you want the agent to continue through
-review checkpoints. Give feedback in the same chat—the skills update related documents
-when requirements change. The agent reports failed, blocked, and untested checks.
+Start feature work on its intended branch before drafting the specification or
+implementing. The recommended order is `/speckit:git-feature` followed by
+`/speckit:specify`. If `specify` is invoked first, it asks at the start of every
+Git-backed invocation—including on an existing feature branch—whether the feature
+belongs on the current branch or needs a new one. It requires a new feature branch on
+`main`, `master`, `develop`, `development`, `staging`, `production`, and `release/*`;
+for other ambiguous branch names, it asks whether the branch is shared. When a new
+branch is chosen or required, `specify` automatically invokes `git-feature` in the same
+invocation, with its normal confirmations, before feature analysis or documents are
+created. If needed, safe Spec Kit initialization happens after the branch choice and
+before branch creation. Branch creation starts from the approved current `HEAD`; it
+does not create the spec directory.
 
 ### Add unit tests in a separate session
 
@@ -81,12 +89,13 @@ not fix production code or install dependencies.
 | [`converge`](skills/converge/SKILL.md) | Compare completed work with acceptance criteria and add tasks for concrete gaps. |
 | [`checklist`](skills/checklist/SKILL.md) | Review requirements in a chosen area, such as accessibility or compatibility. |
 | [`taskstoissues`](skills/taskstoissues/SKILL.md) | Publish tasks as GitHub issues only after confirming the destination and approving the proposal. |
+| [`git-feature`](skills/git-feature/SKILL.md) | Create an approved numbered feature branch. |
+| [`git-validate`](skills/git-validate/SKILL.md) | Validate a numbered feature branch and find matching specifications. |
+| [`git-remote`](skills/git-remote/SKILL.md) | Detect whether the origin remote is a GitHub repository without contacting it. |
+| [`git-commit`](skills/git-commit/SKILL.md) | Commit explicitly reviewed and approved changes. |
 
 Use the command names shown by your client: some clients display `/speckit:<skill>`,
 while others show plain skill names such as `plan`.
-
-The plugin does not create branches, stage or commit changes, push, deploy, or publish
-issues automatically.
 
 ## Plugin development
 
