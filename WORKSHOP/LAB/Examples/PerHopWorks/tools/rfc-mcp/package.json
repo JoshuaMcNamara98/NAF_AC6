@@ -1,6 +1,0 @@
-{
-  "name": "perhop-rfc-mcp-compat",
-  "private": true,
-  "type": "module",
-  "dependencies": { "@mjpitz/mcp-rfc": "0.2504.4" }
-}

@@ -1,75 +1,76 @@
-# NAF AC6 · Build a Networking Game
+# Spec Kit Software Skills
 
-**Turn a networking concept into a game someone can learn from—and a GitHub project you can show.**
+A VS Code agent plugin for planning, building, and verifying features in existing
+software projects.
 
-Workshop materials for **Loop Engineering, Spec-Driven Development & the Future of VibeOps**, led by John Capobianco, Joksan Flores, and Elliot Conner.
+## Install the plugin
 
-You'll define the learning experience, give your coding agent a clear specification, build a small browser game, and verify that it teaches the right thing. Your finished repository should explain what you built, how to play, and how you checked it.
+1. In VS Code, run **Chat: Install Plugin from Source** from the Command Palette.
+2. Enter this repository's Git URL or the absolute path to its local clone.
+3. Choose **User** scope to use the skills across projects.
+4. Open your application project, start a fresh Copilot chat, and check
+   **Chat: Open Customizations** or the chat `/` menu for the skills.
 
-**[Start the lab →](WORKSHOP/LAB/README.md)** · **[Get the templates](WORKSHOP/LAB/StarterKit/)** · **[See a worked example](WORKSHOP/LAB/Examples/PrefixQuest/README.md)**
+This is an agent plugin, not a VSIX extension or standalone AI runtime. Use a
+VS Code/Copilot client that supports
+[Agent Plugins 1.0](https://code.visualstudio.com/docs/agents/reference/agent-plugin-reference).
+For private repositories, the client must have Git access and allow plugin installation.
 
-## Play the completed example
+## Start a fresh project
 
-**[Per-Hop Works](WORKSHOP/LAB/Examples/PerHopWorks/README.md)** is a working 3D packet-factory
-game with twelve DiffServ lessons, a beginner introduction, a keyboard-accessible schematic view
-and an immediately available presentation Demo. From this repository's root:
+Open your application repository in VS Code and start a chat. Initialize project-local
+tooling once, then tailor the project's engineering principles:
 
-```sh
-python3 WORKSHOP/LAB/Examples/PerHopWorks/start.py
+```text
+/speckit:init
+/speckit:constitution Follow this project's existing contributor rules.
 ```
 
-It opens **http://localhost:8000**. Playing requires Python 3.11+ and a desktop browser, with no
-API key, package installation or build step. Its README documents the
-[prompts and five-loop Spec Kit build](WORKSHOP/LAB/Examples/PerHopWorks/research/BUILD_PROMPTS.md)
-and the [measured build time, tokens and estimated cost](WORKSHOP/LAB/Examples/PerHopWorks/research/BUILD_LEDGER.md).
+Initialization requires Python 3.10+ and adds the tooling and templates under `.specify/`.
+Feature documents go under `specs/`.
 
-## Your workshop kit
+## Develop a feature
 
-| Resource | What it's for |
+For example, to add a button that imports a JSON file:
+
+```text
+/speckit:specify Add a button to import a JSON file.
+/speckit:clarify
+/speckit:plan
+/speckit:tasks
+/speckit:analyze
+/speckit:implement
+```
+
+Run `clarify` when material questions remain. Review the specification and plan before
+implementation; ask for the full workflow if you want the agent to continue through
+review checkpoints. Give feedback in the same chat—the skills update related documents
+when requirements change. The agent reports failed, blocked, and untested checks.
+
+## Skills and when to use them
+
+| Skill | What it does and when to use it |
 | --- | --- |
-| [Lab walkthrough](WORKSHOP/LAB/README.md) | Setup, the seven Spec Kit steps, checkpoints, troubleshooting, and your demo |
-| [CONSTITUTION.md](WORKSHOP/LAB/StarterKit/CONSTITUTION.md) | The rules your game must uphold |
-| [SPEC.md](WORKSHOP/LAB/StarterKit/SPEC.md) | Players, learning outcomes, gameplay, and testable success criteria |
-| [PLAN.md](WORKSHOP/LAB/StarterKit/PLAN.md) | Implementation choices, data contracts, and verification |
-| [Attendee README template](WORKSHOP/LAB/StarterKit/README.md) | Copy to **your repository root** and personalize |
-| [ARCADE.md](WORKSHOP/LAB/StarterKit/ARCADE.md) | Optional: your build agent fills this in so your game can be listed and played in the web Arcade |
-| [Prefix Quest example](WORKSHOP/LAB/Examples/PrefixQuest/README.md) | A completed set of planning documents and concrete test inputs; no game implementation included |
-| [Per-Hop Works game](WORKSHOP/LAB/Examples/PerHopWorks/README.md) | Playable twelve-level 3D/SVG game, five-loop Spec Kit evidence, prompts and build ledger |
-| [Workshop slides](WORKSHOP/LECTURE/NAF%20AC6%20Workshop%20-%20Itential.pptx) | Lecture and lab context |
-| [Talk slides](TALK/Itential-NAF%20AC6.pptx) | Companion presentation |
+| [`init`](skills/init/SKILL.md) | Set up project-local tooling and templates once per project. |
+| [`constitution`](skills/constitution/SKILL.md) | Create or update the project's engineering principles after initialization. |
+| [`specify`](skills/specify/SKILL.md) | Start each feature by writing its scope, user scenarios, and acceptance criteria. |
+| [`clarify`](skills/clarify/SKILL.md) | Resolve important unanswered requirements and update the specification. |
+| [`plan`](skills/plan/SKILL.md) | Decide how the feature fits the existing project and how it will be verified. |
+| [`tasks`](skills/tasks/SKILL.md) | Turn the agreed specification and plan into ordered, testable work items. |
+| [`analyze`](skills/analyze/SKILL.md) | Check the spec, plan, and tasks for inconsistencies before implementation; read-only. |
+| [`implement`](skills/implement/SKILL.md) | Carry out the agreed tasks, run checks, and record verification. Invoke when ready to implement. |
+| [`converge`](skills/converge/SKILL.md) | Compare completed work with acceptance criteria and add tasks for concrete gaps. |
+| [`checklist`](skills/checklist/SKILL.md) | Review requirements in a chosen area, such as accessibility or compatibility. |
+| [`taskstoissues`](skills/taskstoissues/SKILL.md) | Publish tasks as GitHub issues only after confirming the destination and approving the proposal. |
 
-## What you'll make
+Use the command names shown by your client: some clients display `/speckit:<skill>`,
+while others show plain skill names such as `plan`.
 
-A focused educational game: choose a packet's exit, evaluate an ACL, build a subnet, or trace a DNS lookup. The player's main action should practice the skill you're teaching. Every decision should produce an explanation they can use on the next attempt.
+The plugin does not create branches, stage or commit changes, push, deploy, or publish
+issues automatically.
 
-The recommended workshop build has **one core mechanic, three short levels, deterministic answers, and no backend**. Visual ambition is welcome; finish one complete learning loop before adding more systems.
+## Plugin development
 
-```mermaid
-flowchart LR
-    A[Idea] --> B[Constitution]
-    B --> C[Specify]
-    C --> D[Clarify]
-    D --> E[Plan]
-    E --> F[Tasks]
-    F --> G[Analyze]
-    G --> H[Implement and verify]
-    H --> I[Play and share]
-```
-
-Your coding agent helps build the game. The recommended game itself runs without an AI model. Ralph loops, rendering libraries, and additional build tools are optional extensions after the basic experience works.
-
-## Share your game in the Arcade
-
-Finished games can be listed, and played, at **[automateyournetwork.com/arcade](https://automateyournetwork.com/arcade/)**. Fill in [`StarterKit/ARCADE.md`](WORKSHOP/LAB/StarterKit/ARCADE.md) with your build agent and send John your GitHub URL. See the lab guide for the steps.
-
-## Work in a repository you own
-
-Create your own GitHub repository. Copy the three planning templates into a `StarterKit/` folder, and copy the attendee README to the root. Keep this repository open as your reference. The [lab walkthrough](WORKSHOP/LAB/README.md) shows the exact layout and setup steps.
-
-Before sharing, make one deliberately wrong move. If the game can't explain it clearly—or marks an incorrect decision as correct—keep improving that part.
-
-## Credits and resources
-
-Based on John Capobianco's [Networking Video Game Starter Kit](https://github.com/automateyournetwork/NetworkingVideoGameStarterKit) and the workshop deck in this repository. The workflow uses [GitHub Spec Kit](https://github.com/github/spec-kit).
-
-Workshop repository license: [Apache 2.0](LICENSE).
+Canonical sources are [skills](skills/), [scripts](scripts/), [templates](templates/),
+and [shared workflow guidance](docs/workflow.md). Repository-specific instructions are
+in [AGENTS.md](AGENTS.md).

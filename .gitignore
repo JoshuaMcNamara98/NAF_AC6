@@ -7,4 +7,8 @@ __pycache__/
 .venv/
 .env*
 *.log
-.claude/ralph-loop.local.md
+
+# This plugin checkout uses canonical scripts/ and templates/; local copies are generated.
+.specify/scripts/
+.specify/templates/
+.specify/feature.json
