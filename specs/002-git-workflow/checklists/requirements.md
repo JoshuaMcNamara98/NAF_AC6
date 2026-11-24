@@ -20,6 +20,9 @@ requested Git-skill work.
   missing prerequisites, missing matching specs, unapproved actions, and credentials.
 - The user-confirmed request is recorded separately from assumptions about the full
   feature boundary.
+- The `specify` branch preflight, same-invocation branch flow, required confirmations,
+  timing, prompt scope, shared-branch rules, no-Git behavior, tooling prerequisites,
+  and stop conditions are specified with observable scenarios.
 - Bash and PowerShell compatibility and credential-handling constraints are stated.
   Performance thresholds are not applicable to these interactive workflows.
 - No unresolved material requirements questions block clarification or planning.

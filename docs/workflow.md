@@ -14,6 +14,38 @@ project**, not the installed plugin.
 - Use a verified Python 3.10+ executable (`python`, `python3`, or a versioned executable);
   no third-party Python packages are needed.
 
+## Choose a branch before specifying
+
+The recommended order for new work is `/speckit:git-feature` followed by
+`/speckit:specify`, before substantial design or implementation work begins. Branch
+creation does not create a spec directory; `specify` creates the feature documents.
+
+When `specify` is invoked, it must inspect the target repository and current branch,
+then ask at the start of every Git-backed invocation—including when already on a
+feature branch—whether the requested work belongs on that branch or needs a new one.
+Do this before project initialization or feature-specific analysis and clarification.
+Do not infer the answer from the branch name. Require a new feature branch when the
+current branch is `main`, `master`, `develop`, `development`, `staging`, `production`,
+or matches `release/*`, even if the user initially chooses to stay. For other ambiguous
+branch names, ask whether the branch is shared; if it is, require a new feature branch.
+On a non-shared branch, the user may choose to continue there, in which case record the
+branch. When a new branch is required or chosen, `specify` automatically invokes and
+follows `git-feature` in the same invocation before feature-specific work. If project
+tooling is missing, initialize it after the branch choice and before installing or
+running the Git extension; this setup must not begin feature-specific analysis. Stop if
+`.specify/` is unmanaged or incompatible. This skill-to-skill flow does not bypass the
+branch-creation confirmations.
+
+The `git-feature` workflow still requires confirmation of the target repository,
+current branch, worktree, intended base, and branch name. The branch-creation script
+starts from the current `HEAD`, so verify it is the approved base. Disclose and obtain
+approval for any fetch/prune of remote-tracking refs before running the script. Verify
+the resulting branch before continuing. If the user declines, a required confirmation
+is missing, or branch creation fails, stop before writing feature documents. If Git is
+unavailable, explain that branch creation cannot run and ask whether to proceed without
+it. Continue only if the user confirms; otherwise stop. Never initialize Git or switch
+branches silently.
+
 ## Initialize and select
 
 The `tests` skill uses the tests-only exception below instead of initialization or
@@ -63,10 +95,11 @@ clients may show commands such as `/speckit:plan`; others may show plain names s
 `plan`. Printing a slash command does not invoke it. This plugin has no automatic commit
 hooks or executable lifecycle hooks.
 
-The explicitly invoked Git skills operate on existing repositories using the bundled
-Git tooling. They do not require feature selection or initialize Git. A branch, commit,
-or push requires explicit user approval; review each proposed commit and preserve
-unrelated changes.
+The Git skills operate on existing repositories using the bundled Git tooling and do
+not require feature selection or initialize Git. `git-feature` can be invoked directly
+or as a gated step within `specify`; this does not execute extension hooks
+automatically. Branch creation, commits, and pushes require the applicable explicit
+user approval; review each proposed commit and preserve unrelated changes.
 
 ## Tests-only exception
 

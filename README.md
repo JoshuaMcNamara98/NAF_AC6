@@ -42,10 +42,18 @@ For example, to add a button that imports a JSON file:
 /speckit:implement
 ```
 
-Run `clarify` when material questions remain. Review the specification and plan before
-implementation; ask for the full workflow if you want the agent to continue through
-review checkpoints. Give feedback in the same chat—the skills update related documents
-when requirements change. The agent reports failed, blocked, and untested checks.
+Start feature work on its intended branch before drafting the specification or
+implementing. The recommended order is `/speckit:git-feature` followed by
+`/speckit:specify`. If `specify` is invoked first, it asks at the start of every
+Git-backed invocation—including on an existing feature branch—whether the feature
+belongs on the current branch or needs a new one. It requires a new feature branch on
+`main`, `master`, `develop`, `development`, `staging`, `production`, and `release/*`;
+for other ambiguous branch names, it asks whether the branch is shared. When a new
+branch is chosen or required, `specify` automatically invokes `git-feature` in the same
+invocation, with its normal confirmations, before feature analysis or documents are
+created. If needed, safe Spec Kit initialization happens after the branch choice and
+before branch creation. Branch creation starts from the approved current `HEAD`; it
+does not create the spec directory.
 
 ### Add unit tests in a separate session
 

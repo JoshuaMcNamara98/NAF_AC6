@@ -12,3 +12,5 @@ __pycache__/
 .specify/scripts/
 .specify/templates/
 .specify/feature.json
+
+.registry
