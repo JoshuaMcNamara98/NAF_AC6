@@ -81,12 +81,13 @@ not fix production code or install dependencies.
 | [`converge`](skills/converge/SKILL.md) | Compare completed work with acceptance criteria and add tasks for concrete gaps. |
 | [`checklist`](skills/checklist/SKILL.md) | Review requirements in a chosen area, such as accessibility or compatibility. |
 | [`taskstoissues`](skills/taskstoissues/SKILL.md) | Publish tasks as GitHub issues only after confirming the destination and approving the proposal. |
+| [`git-feature`](skills/git-feature/SKILL.md) | Create an approved numbered feature branch. |
+| [`git-validate`](skills/git-validate/SKILL.md) | Validate a numbered feature branch and find matching specifications. |
+| [`git-remote`](skills/git-remote/SKILL.md) | Detect whether the origin remote is a GitHub repository without contacting it. |
+| [`git-commit`](skills/git-commit/SKILL.md) | Commit explicitly reviewed and approved changes. |
 
 Use the command names shown by your client: some clients display `/speckit:<skill>`,
 while others show plain skill names such as `plan`.
-
-The plugin does not create branches, stage or commit changes, push, deploy, or publish
-issues automatically.
 
 ## Plugin development
 

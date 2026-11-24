@@ -63,6 +63,11 @@ clients may show commands such as `/speckit:plan`; others may show plain names s
 `plan`. Printing a slash command does not invoke it. This plugin has no automatic commit
 hooks or executable lifecycle hooks.
 
+The explicitly invoked Git skills operate on existing repositories using the bundled
+Git tooling. They do not require feature selection or initialize Git. A branch, commit,
+or push requires explicit user approval; review each proposed commit and preserve
+unrelated changes.
+
 ## Tests-only exception
 
 The manually invoked `tests` skill supports existing implementations with incomplete
