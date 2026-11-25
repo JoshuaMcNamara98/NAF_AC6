@@ -2,7 +2,7 @@
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "speckit",
   "description": "Project-aware, specification-driven software development skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "license": "Apache-2.0",
   "keywords": ["software-development", "specifications", "planning", "implementation"]
 }
