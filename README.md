@@ -34,12 +34,24 @@ Feature documents go under `specs/`.
 For example, to add a button that imports a JSON file:
 
 ```text
+/speckit:feature-workflow Add a button to import a JSON file.
+```
+
+The workflow guides you through branch setup, remote detection, specification,
+validation, clarification, planning, tasks, analysis, implementation, and convergence.
+Ask to include the optional `tests` stage when you want it.
+It checks setup prerequisites but does not run `init` or `constitution` for you.
+
+To run the stages individually:
+
+```text
 /speckit:specify Add a button to import a JSON file.
 /speckit:clarify
 /speckit:plan
 /speckit:tasks
 /speckit:analyze
 /speckit:implement
+/speckit:converge
 ```
 
 Start feature work on its intended branch before drafting the specification or
@@ -79,6 +91,7 @@ not fix production code or install dependencies.
 | --- | --- |
 | [`init`](skills/init/SKILL.md) | Set up project-local tooling and templates once per project. |
 | [`constitution`](skills/constitution/SKILL.md) | Create or update the project's engineering principles after initialization. |
+| [`feature-workflow`](skills/feature-workflow/SKILL.md) | Guide a complete feature through the ordered workflow, with optional tests and user-controlled approvals. |
 | [`specify`](skills/specify/SKILL.md) | Start each feature by writing its scope, user scenarios, and acceptance criteria. |
 | [`clarify`](skills/clarify/SKILL.md) | Resolve important unanswered requirements and update the specification. |
 | [`plan`](skills/plan/SKILL.md) | Decide how the feature fits the existing project and how it will be verified. |
