@@ -64,7 +64,7 @@ does not run it unless I ask, while still retaining the implementation stage's o
 verification responsibilities.
 
 **Independent Test**: Complete the workflow once without requesting `tests` and once
-with an explicit request; verify stage status, ordering, and the final reminder.
+with an explicit request; verify stage status, ordering, and completion reporting.
 
 **Acceptance Scenarios**:
 
@@ -74,8 +74,8 @@ with an explicit request; verify stage status, ordering, and the final reminder.
    workflow reaches the optional stage after convergence, **Then** it runs `tests`
    using that skill's normal constraints and records the result.
 3. **Given** all requested stages finish, **When** the workflow reports completion,
-   **Then** it reminds the user to run `git-commit` to finalize the changes and does
-   not commit on the user's behalf.
+   **Then** it reports configured commit outcomes and remaining uncommitted changes
+   without invoking or recommending a final `git-commit` stage.
 
 ### Edge Cases
 
@@ -121,9 +121,15 @@ with an explicit request; verify stage status, ordering, and the final reminder.
 - **FR-007**: The separate `tests` stage runs after `converge` only when the user
   explicitly requests it. Omitting that stage does not bypass verification required
   by `implement`.
-- **FR-008**: On successful completion of all requested stages, the skill reminds
-  the user to run `git-commit` to finalize the feature. It does not invoke `git-commit`
-  or stage, commit, push, or deploy changes automatically.
+- **FR-008**: The skill processes supported before/after commit events from the
+  target project's Git extension configuration, using explicit per-event enablement
+  or the default when no event subsection exists. Missing configuration and disabled
+  events skip commits. Enabled events require review and explicit approval for each
+  event's files and message; unrelated changes must be preserved. Invalid configuration,
+  missing enabled-hook resources, failures, or declined approvals block later stages.
+  Verify commit outcomes and avoid duplicate or empty commits. Do not invent events
+  for convergence or tests. Completion reports commits and remaining changes without
+  invoking or recommending a final `git-commit` stage, pushing, or deploying.
 - **FR-009**: The skill reports the outcome and any remaining blockers or skipped
   stages, and does not claim that a stage or verification passed unless it actually
   completed.
@@ -149,20 +155,22 @@ with an explicit request; verify stage status, ordering, and the final reminder.
   stage starts before the blocker is resolved.
 - **SC-005**: The separate `tests` stage runs only after an explicit user request;
   implementation verification still occurs whether or not that stage is requested.
-- **SC-006**: Every successful run ends with a `git-commit` reminder and makes no
-  commit or push through the orchestrator.
+- **SC-006**: Enabled supported commit events run only after explicit approval,
+  disabled events do not stage changes, and failures prevent later stages. Every
+  successful run reports commits and remaining changes without a final `git-commit`
+  stage or reminder, duplicate/empty commits, or a push.
 - **SC-007**: A successful stage with no pending decision automatically advances to
   the next stage; a stage-specific approval or blocker still pauses progression.
 
 ## Scope and Dependencies
 
 **Included**: One orchestration skill for the defined feature-development stages,
-setup preflight, visible task status, optional separate tests, and a final
-`git-commit` reminder.
+setup preflight, visible task status, optional separate tests, and configured
+before/after commit events with per-commit approval.
 **Excluded**: Automatically running `init` or `constitution`; changing the behavior
-of existing skills; bypassing their user controls; automatically committing, pushing,
-deploying, or publishing; automatically running the separate tests stage when it was
-not requested.
+of standalone skills; bypassing their user controls; unapproved commits, a catch-all
+final commit, pushing, deploying, or publishing; automatically running the separate
+tests stage when it was not requested.
 **Dependencies**: The target project has compatible managed Spec Kit tooling and a
 populated constitution. The existing `git-feature`, `git-remote`, `specify`,
 `git-validate`, `clarify`, `plan`, `tasks`, `analyze`, `implement`, `converge`,
@@ -182,6 +190,9 @@ requires them.
 - 2026-11-25: After a stage succeeds, continue to the next stage automatically unless
   the stage's own instructions require a user decision, or a failure or changed
   requirement requires a pause.
+- 2026-11-25: Maintainer requested configured auto-commit support instead of the
+  final `git-commit` reminder. Process supported target-project events explicitly;
+  configuration does not waive per-commit approvals or tests-only constraints.
 
 ## Assumptions
 

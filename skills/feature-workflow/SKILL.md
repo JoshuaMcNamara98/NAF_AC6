@@ -75,8 +75,10 @@ were read. Mark a stage completed only after its work and required checks succee
 9. [`implement`](../implement/SKILL.md)
 10. [`converge`](../converge/SKILL.md)
 
-After each successful stage with no pending decision, mark it completed, make the
-next stage current, and continue without an extra approval prompt. Preserve every
+Before each stage, process its configured `before_<skill>` commit event as described
+below. After each successful stage, process its configured `after_<skill>` commit
+event before marking it completed. With no pending decision, make the next stage
+current and continue without an extra handoff approval prompt. Preserve every
 stage-specific confirmation, question, review checkpoint, and user-feedback pause.
 The user's request to run this complete workflow allows continuation past normal
 stage review checkpoints, but it does not waive approvals or resolve material
@@ -89,8 +91,57 @@ later stage or claim that a blocked or unrun stage succeeded. If feedback change
 requirements, pause and update the spec, plan, and tasks before continuing.
 
 The `git-remote` stage detects the configured origin without contacting it. Other
-Git operations must obey their canonical skill's approval rules. Never stage, commit,
-push, deploy, publish, or alter remotes on behalf of the user.
+Git operations must obey their canonical skill's approval rules. Staging and commits
+are allowed only for the configured, explicitly approved events below. Never push,
+deploy, publish, or alter remotes on behalf of the user.
+
+## Configured auto-commit events
+
+Use the **target project's** `.specify/extensions/git/git-config.yml`, not the
+installed plugin's configuration. A missing config disables auto-commit; report
+that it is skipped and continue. If present, verify it is readable, valid YAML,
+and that the relevant `auto_commit` values are booleans and messages are strings.
+An event subsection must contain a boolean `enabled` value when present.
+Report invalid configuration and block before running the affected stage or event;
+do not silently treat invalid values as disabled.
+
+Use the target's `.specify/extensions/git/extension.yml` to identify registered
+commit hooks for the stage. The supported workflow events are `before_clarify`,
+`before_plan`, `before_tasks`, `before_analyze`, `before_implement`, and
+`after_specify`, `after_clarify`, `after_plan`, `after_tasks`, `after_analyze`,
+`after_implement`. Do not invent events for `git-feature`, `git-remote`,
+`git-validate`, `converge`, or `tests`, even when `auto_commit.default` is true.
+For each supported event, use its subsection's explicit `enabled` value; otherwise
+use `auto_commit.default`, which defaults to false. Report disabled events as
+skipped without staging or committing.
+
+For each enabled event:
+
+1. Verify the target's registered hook and platform-appropriate auto-commit script
+   exist. If missing or incompatible, report the blocker and stop; do not install
+   or overwrite extension files automatically.
+2. Follow the review and approval controls in
+   [`git-commit`](../git-commit/SKILL.md): inspect the current branch, staged and
+   unstaged diffs, and untracked files. Explain that the upstream script stages
+   **all** changes. Propose the exact event, files, configured message (or the
+   script's default message), and required trailers; obtain explicit approval
+   before each commit. Configuration enables an event; it does not approve its
+   contents. If unrelated work would be included or the script cannot produce the
+   approved message/trailers, stop for user direction rather than changing the
+   index, configuration, or commit scope silently.
+3. Execute the target project's script with that event using the canonical
+   [commit command](../../.specify/extensions/git/commands/speckit.git.commit.md).
+   Do not run the installed plugin's script against its own checkout. If the
+   client already executed the same hook for this stage, verify its result instead
+   of running it twice.
+4. Verify the actual commit and remaining Git state. A clean worktree needs no
+   empty commit; report it as a no-change event. A failed or declined commit, or
+   a script that skips an enabled event despite pending changes, blocks the
+   current stage and later stages. Report the failure and any staged changes
+   left by the script; do not reset them or claim success.
+
+These events do not change individual skills' standalone behavior or authorize
+commits during the optional tests-only stage.
 
 ## Optional tests and completion
 
@@ -103,6 +154,7 @@ and obtain its required confirmation before writing tests. Do not treat this opt
 stage as a substitute for implementation verification.
 
 When all required stages and any requested tests stage finish, report the actual
-outcomes, skipped checks, and remaining work. Remind the user to run
-[`git-commit`](../git-commit/SKILL.md) to finalize changes; do not invoke it or commit
-automatically.
+outcomes, commit hashes and events, skipped checks/events, and remaining work.
+Report any uncommitted changes, including those from `converge` or optional `tests`.
+Do not invoke or recommend a final `git-commit` stage, or make a catch-all final
+commit.
