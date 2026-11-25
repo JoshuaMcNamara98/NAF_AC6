@@ -41,6 +41,11 @@ The workflow guides you through branch setup, remote detection, specification,
 validation, clarification, planning, tasks, analysis, implementation, and convergence.
 Ask to include the optional `tests` stage when you want it.
 It checks setup prerequisites but does not run `init` or `constitution` for you.
+It honors enabled before/after commit events in the target project's
+`.specify/extensions/git/git-config.yml`, with review and approval before each
+commit. The upstream script stages all changes, so unrelated work must be resolved
+before approval. Missing configuration or disabled events leave changes uncommitted.
+There is no final `git-commit` stage or reminder; remaining changes are reported.
 
 To run the stages individually:
 

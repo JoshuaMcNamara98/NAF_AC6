@@ -12,8 +12,10 @@ managed Spec Kit marker/CLI and constitution before beginning, display a convers
 task list that identifies the current stage, and follow each stage's canonical
 instructions rather than merely printing skill names. Successful stages advance
 automatically unless a canonical skill requires user input or a blocker occurs.
-The separate `tests` stage remains opt-in after `converge`; the skill ends by
-reminding the user to run `git-commit`.
+The separate `tests` stage remains opt-in after `converge`. Process supported
+target-project Git extension commit events before/after stages with per-commit
+approval; completion reports commits and remaining changes without a final
+`git-commit` stage or reminder.
 
 ## Repository Findings
 
@@ -33,7 +35,7 @@ reminding the user to run `git-commit`.
 - The existing skills define important interactions that must not be bypassed:
   branch and commit approvals, user clarification and review, explicit failure
   reporting, the separate-session recommendation and same-session confirmation for
-  `tests`, and the prohibition on automatic commits or pushes.
+  `tests`, and the prohibition on unapproved commits or pushes.
 - `docs/workflow.md` requires a confirmed target project, Python 3.10+ for Spec Kit
   CLI operations, explicit branch/commit control, and no claim that printing a skill
   command invokes it. `init` seeds `.specify/memory/constitution.md`, and
@@ -66,7 +68,8 @@ reminding the user to run `git-commit`.
 - **Agreed scope**: Pass. Preserve the user-approved sequence and optional test stage.
   Keep the canonical skills authoritative for their stage behavior.
 - **Safe and clear behavior**: Pass. Stop on failed preflight or a blocked/declined
-  stage; preserve each skill's approval gates; do not commit, push, or deploy.
+  stage; preserve each skill's approval gates; commit only approved configured
+  events, never push or deploy.
 - **Demonstrated quality**: Pass with a verification limitation. There is no existing
   automated test suite for skill orchestration; validate metadata and links statically
   and exercise requirements through a documented manual acceptance walkthrough.
@@ -87,6 +90,12 @@ reminding the user to run `git-commit`.
   readable non-empty `.specify/memory/constitution.md`. Use read-only inspection;
   report missing/incompatible setup and stop without running `init` or `constitution`.
 - At each handoff, mark the completed stage and next current stage in the task list.
+- Process supported commit events using the target's `git-config.yml`,
+  `extension.yml`, and existing platform script. Validate configuration, report
+  disabled/missing-config skips, and block on missing enabled-event resources or
+  commit failures. Review all changes and obtain approval before each commit because
+  the script stages all changes; preserve unrelated work and verify actual outcomes.
+  Avoid duplicate hooks and empty commits. Do not invent convergence or tests events.
 - Follow each existing stage's canonical instructions and user prompts. Where
   client-level skill invocation is not available, read/follow its canonical linked
   `SKILL.md` instructions; do not print slash commands as a substitute for execution.
@@ -96,8 +105,8 @@ reminding the user to run `git-commit`.
 - Run `tests` after `converge` only when explicitly requested. Honor its
   same-session independence warning and request for confirmation before writing
   tests if this workflow authored implementation in the same session.
-- At completion, report stage outcomes and remaining work, then remind the user to
-  invoke `git-commit` separately. Do not invoke it or perform Git write operations.
+- At completion, report stage outcomes, commit hashes/events, and remaining work.
+  Do not invoke or recommend a final `git-commit` stage or catch-all commit.
 - Update the relevant README feature-workflow example and skills table to document
   the new entry point and retain the existing manual sequence as needed. Do not edit
   other canonical skill files, `plugin.json`, runtime scripts, or consumer `.specify/`.
@@ -112,7 +121,7 @@ reminding the user to run `git-commit`.
 | FR-004 / FR-006 / SC-004 / SC-007 | Walk success, prompt/approval, failure, and user-decline handoffs against each canonical skill | Success advances without an extra approval; canonical gates are preserved; a blocker prevents later stages from starting. |
 | FR-005 / SC-002 | Inspect task-list behavior through successive stage transitions | Exactly one stage is current, or the workflow clearly shows paused, complete, or blocked state; remaining stages are accurately pending/skipped. |
 | FR-007 / SC-005 | Run walkthrough with and without explicit tests request | Separate tests stage runs only when requested, after converge; implement verification remains required. |
-| FR-008 / SC-006 | Inspect completion output and observe Git state | Completion includes the git-commit reminder; orchestrator does not stage, commit, push, or deploy. |
+| FR-008 / SC-006 | Inspect event configuration/approval/failure paths and completion output | Only approved enabled supported events commit; disabled events skip, failures block, outcomes are verified, and no final git-commit stage/reminder or push occurs. |
 | FR-009 | Exercise missing-input and blocked-stage paths | Outcomes and blockers are reported accurately; no unrun stage or check is described as successful. |
 | All changed Markdown | `git diff --check` and inspect new relative links/frontmatter | No whitespace errors, unresolved placeholders, mismatched skill metadata, or broken relative links. |
 

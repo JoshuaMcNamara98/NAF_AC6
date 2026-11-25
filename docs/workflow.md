@@ -92,14 +92,19 @@ selection writes.
 
 Use the skill invocation mechanism and names exposed by the current client. Plugin-aware
 clients may show commands such as `/speckit:plan`; others may show plain names such as
-`plan`. Printing a slash command does not invoke it. This plugin has no automatic commit
-hooks or executable lifecycle hooks.
+`plan`. Printing a slash command does not invoke it. This plugin has no executable
+lifecycle hook dispatcher. `feature-workflow` explicitly processes the target
+project's configured Git extension commit events before/after supported stages,
+preserving per-commit review and approval. Disabled events are skipped; enabled
+events do not grant approval to commit unrelated work. It reports remaining changes
+without running or recommending a final `git-commit` stage.
 
 The Git skills operate on existing repositories using the bundled Git tooling and do
 not require feature selection or initialize Git. `git-feature` can be invoked directly
 or as a gated step within `specify`; this does not execute extension hooks
-automatically. Branch creation, commits, and pushes require the applicable explicit
-user approval; review each proposed commit and preserve unrelated changes.
+automatically outside `feature-workflow`. Branch creation, commits, and pushes
+require the applicable explicit user approval; review each proposed commit and
+preserve unrelated changes.
 
 ## Tests-only exception
 

@@ -7,6 +7,10 @@ document-based scenario review only; no live VS Code/Copilot session was exercis
 
 ## Results
 
+The results below describe the original implementation, before the configured
+auto-commit amendment. Its final-reminder checks are superseded by the amendment
+results at the end of this report.
+
 | Requirement / task | Command or procedure | Actual result | Status |
 | --- | --- | --- | --- |
 | FR-001, NFR-001 / T001 | Python 3.11 inline static assertions via `python3.11 - <<'PY'`; checked skill frontmatter/directory name, all local resource links, required stage order, and README entry | Printed `PASS: frontmatter, relative links, stage order, optional tests/commit behavior, README, tooling fixture, traceability, and whitespace`. | Passed (static) |
@@ -36,3 +40,23 @@ document-based scenario review only; no live VS Code/Copilot session was exercis
 - The analyze-stage traceability finding was addressed: README task T002 now includes
   US1, FR-001, and NFR-001 coverage.
 - Live human review and plugin installation were not performed.
+
+## Configured auto-commit amendment - 2026-11-25
+
+- Updated the orchestrator and related documentation to process supported
+  target-project commit events with per-commit review and approval. Removed the
+  final `git-commit` stage/reminder; completion reports remaining changes instead.
+- `git diff --check` passed.
+- `python3 - <<'PY'` inline static assertions passed for skill frontmatter,
+  relative links in all six amended Markdown files, unchanged ten-stage order,
+  the eleven supported events mapped to `speckit.git.commit` in the bundled
+  extension manifest, configuration/default handling, approval and unrelated-work
+  controls, required trailers, duplicate/no-change handling, failure blocking,
+  target-project execution, tests-only constraints, and completion reporting.
+  Output: `PASS: metadata, relative links, unchanged stage order, 11 registered
+  commit events, configuration/approval/failure controls, and completion rules`.
+- No runtime scripts, configuration, or plugin version were changed. No files
+  were staged and no commits were created during this update.
+- Live client installation and commit execution were not tested. T009 remains
+  pending for enabled/disabled events and error/approval scenarios in disposable
+  consumer repositories. Original live checks T005-T007 also remain unverified.
